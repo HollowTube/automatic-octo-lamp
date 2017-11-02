@@ -23,10 +23,10 @@ public class Queue {
 		String data = "";
 		if(front != null) {
 			data = front.token;
-			front = front.next;
 			if(front == rear) {
 				rear = null;
 			}
+			front = front.next;
 			return data;
 		}
 		System.out.println("ERROR: QUEUE EMPTY");

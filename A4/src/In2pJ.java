@@ -6,7 +6,16 @@ public class In2pJ {
 	public static void print(String num) {
 		System.out.println(num);
 	}
-	
+	public enum operator{
+		PLUS("+",0), MINUS("-",1), MULTIPLY("-",2), DIVIDE("/",3), LEFT("-",4), RIGHT("-",5);
+		private String type;
+		private int precedence;
+		private operator(String type, int precedence) {
+			this.precedence = precedence;
+			this.type = type;
+		}
+	}
+	static operator op;
 	//assigns a integer value depending on the tokens
 	private static int CheckPrecedence(String token, String that) {
 		if(token.equals(that)) return 0;
@@ -18,6 +27,17 @@ public class In2pJ {
 	public static boolean isAnOperator(String token) {
 		if( token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")) return true;
 		else return false;
+	}
+	public static boolean isOp(String token) {
+		switch(token) {
+		case "+": op = operator.PLUS;return true;
+		case "-": op = operator.PLUS;return true;
+		case "*": op = operator.PLUS;return true;
+		case "/": op = operator.PLUS;return true;
+		case "(": op = operator.PLUS;return true;
+		case ")": op = operator.PLUS;return true;	
+		default: return false;
+		}
 	}
 	public static boolean isABracket(String token) {
 		if(token.equals("(")||token.equals(")")) return true;
@@ -41,22 +61,23 @@ public class In2pJ {
 		Queue output = new Queue();
 		Stack operation = new Stack();
 		String token;
+		boolean x;
 		
 	    print("Starting input Queue");
 	    input.printQueue();
 	    System.out.println("");
 	    	
 	    //Going through input queue, Shunting yard algorithm
-	    while (input.front != null) 
+	    while (!input.isEmpty()) 
 	    {
 	    	token = input.deQueueToken();
-	    	if(isAnOperator(token))
+	    	if(isOp(token))
 	    	{
-		    		while(CheckPrecedence(token, operation.getTop()) != -1 && !operation.isEmpty()) 
-		    		{
-		    			output.enQueueToken(operation.popToken());
-		    		}
-		    		operation.push(token);
+		    	while(CheckPrecedence(op.type, operation.getTop()) != -1 && !operation.isEmpty()) 
+		    	{
+		    		output.enQueueToken(operation.popToken());
+		   		}
+		   		operation.push(token);
 	    	}
 	    	else 
 	    	{
@@ -75,8 +96,6 @@ public class In2pJ {
 	    {
 	    	output.enQueueToken(operation.popToken());
 	    }
-	    
-	    
 	    System.out.println("Final output Queue");
 	    output.printQueue();
 	    
@@ -105,16 +124,19 @@ public class In2pJ {
 		}
 		return buffer.popToken();
 	}
-	
+
 	public static void main(String[] args) {
 		String str;
 		String result;
 		Queue postfix;
 		Scanner scan = new Scanner(System.in);
-		str = scan.nextLine();
-		postfix = in_post(str);
-		result = evaluatePF(postfix);
-		System.out.println(result);
+		while (true) {
+			System.out.println("Enter string");
+			str = scan.nextLine();
+			postfix = in_post(str);
+			result = evaluatePF(postfix);
+			System.out.println(result);
+		}
 	}
 		
 }
