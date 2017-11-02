@@ -17,7 +17,7 @@ public class Stack {
 			return data;
 		}
 		else {
-			System.out.println("ERROR STACK EMPTY");
+			//System.out.println("ERROR STACK EMPTY");
 			return "0";
 		}
 	}

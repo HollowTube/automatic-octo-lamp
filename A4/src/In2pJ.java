@@ -17,12 +17,7 @@ public class In2pJ {
 	}
 	static operator op;
 	//assigns a integer value depending on the tokens
-	private static int CheckPrecedence(String token, String that) {
-		if(token.equals(that)) return 0;
-		else if((token.equals("*") || token.equals("/")) && (that.equals("+") || that.equals("-")))
-		return -1;
-		else return 1;
-	}
+	
 	//Checks if token is an operator
 	public static boolean isAnOperator(String token) {
 		if( token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")) return true;
@@ -31,12 +26,23 @@ public class In2pJ {
 	public static boolean isOp(String token) {
 		switch(token) {
 		case "+": op = operator.PLUS;return true;
-		case "-": op = operator.PLUS;return true;
-		case "*": op = operator.PLUS;return true;
-		case "/": op = operator.PLUS;return true;
-		case "(": op = operator.PLUS;return true;
-		case ")": op = operator.PLUS;return true;	
+		case "-": op = operator.MINUS;return true;
+		case "*": op = operator.MULTIPLY;return true;
+		case "/": op = operator.DIVIDE;return true;
+		case "(": op = operator.LEFT;return true;
+		case ")": op = operator.RIGHT;return true;	
 		default: return false;
+		}
+	}
+	public static int getOpValue(String token) {
+		switch(token) {
+		case "+": op = operator.PLUS;return 1;
+		case "-": op = operator.MINUS;return 2;
+		case "*": op = operator.MULTIPLY;return 3;
+		case "/": op = operator.DIVIDE;return 4;
+		case "(": op = operator.LEFT;return -1;
+		case ")": op = operator.RIGHT;return -1;	
+		default: return 0;
 		}
 	}
 	public static boolean isABracket(String token) {
@@ -47,8 +53,8 @@ public class In2pJ {
 	//Takes user input and places it inside input queue and returns the queue
 	private static Queue inputBuffer(String in){
 		Queue input = new Queue();
-		StringTokenizer st = new StringTokenizer(in,"+-*/",true);
-		while (st.hasMoreTokens()) {
+		StringTokenizer st = new StringTokenizer(in,"+-*/()",true);
+		while (st.hasMoreTokens()){
 	    	input.enQueueToken(st.nextToken());
 		}
 		return input;
@@ -61,7 +67,6 @@ public class In2pJ {
 		Queue output = new Queue();
 		Stack operation = new Stack();
 		String token;
-		boolean x;
 		
 	    print("Starting input Queue");
 	    input.printQueue();
@@ -71,13 +76,24 @@ public class In2pJ {
 	    while (!input.isEmpty()) 
 	    {
 	    	token = input.deQueueToken();
-	    	if(isOp(token))
+	    	if(isAnOperator(token))
 	    	{
-		    	while(CheckPrecedence(op.type, operation.getTop()) != -1 && !operation.isEmpty()) 
+		    	while(!operation.isEmpty() && getOpValue(token) <= getOpValue(operation.getTop()) ) 
 		    	{
 		    		output.enQueueToken(operation.popToken());
 		   		}
 		   		operation.push(token);
+	    	}
+	    	else if(token.equals("(")) {
+	    		operation.push(token);
+	    	}
+	    	else if (token.equals(")")) 
+	    	{
+	    		while (!operation.getTop().equals("("))
+	    		{
+	    			output.enQueueToken(operation.popToken());
+	    		}
+	    		operation.popToken();
 	    	}
 	    	else 
 	    	{
@@ -102,7 +118,6 @@ public class In2pJ {
 	    return output;
 	    
 	}
-	
 	public static String evaluatePF(Queue in) {
 		Stack buffer = new Stack();
 		String token;
@@ -124,7 +139,6 @@ public class In2pJ {
 		}
 		return buffer.popToken();
 	}
-
 	public static void main(String[] args) {
 		String str;
 		String result;
