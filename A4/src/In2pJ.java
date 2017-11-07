@@ -20,14 +20,14 @@ public class In2pJ {
 		if( token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")) return true;
 		else return false;
 	}
-
-	private boolean isUnary(int count, String token, String prev) {
+	//checks if the token is a unary operator using previous tokens
+	private static boolean isUnary(String token, String prev) {
 		if (!token.equals("-")) return false;
-		if (count  == 0 || isAnOperator(prev) || prev.equals("("))return true;
+		if (prev.equals("") || isAnOperator(prev) || prev.equals("("))return true;
 		else return false;
 	}
 	//returns the precedence of the current token
-	private int getOpValue(String token) {
+	private static int getOpValue(String token) {
 		switch(token) {
 		case "(": return 1;
 		case "+": return 2;
@@ -49,17 +49,16 @@ public class In2pJ {
 	}
 	
 	// "main" function of class
-	public Queue in_post(String in){
+	public static Queue in_post(String in){
 		
 		Queue input = inputBuffer(in);
 		Queue output = new Queue();
 		Stack operation = new Stack();
-		int count = 0;
 		String token;
 		String prevToken = "";
 		
-	    print("Starting input Queue");
-	    input.printQueue();
+//	    print("Starting input Queue");
+//	    input.printQueue();
 	    System.out.println("");
 	    	
 	    //Going through input queue, Shunting yard algorithm
@@ -70,8 +69,9 @@ public class In2pJ {
 	    	if(isANumber(token)) {
 	    		output.enQueueToken(token);
 	    	}
+	    	//pushed unary operator onto stack
 	    	//added new symbol # to distinguish between unary and binary minus
-	    	else if (isUnary(count, token, prevToken)) {
+	    	else if (isUnary(token, prevToken)) {
 	    		operation.push("#");
 	    	}
 	    	//checks if its a token
@@ -98,16 +98,16 @@ public class In2pJ {
 	    		{
 	    			output.enQueueToken(operation.popToken());
 	    		}
+	    		//make sure to discard the left parentheses
 	    		operation.popToken();
 	    	}
 	    	
-	    	print("Current operation Stack: ");
-	 	    operation.printStack();
-	 	    print("Current output Queue: ");
-	 	    output.printQueue();
-	 	    System.out.println("");
-		    System.out.println("");
-		    count ++;
+//	    	print("Current operation Stack: ");
+//	 	    operation.printStack();
+//	 	    print("Current output Queue: ");
+//	 	    output.printQueue();
+//	 	    System.out.println("");
+//		    System.out.println("");
 		    prevToken = token;
 	    }
 	    //when the input is exhausted, pop the operator stack into the output queue
@@ -115,12 +115,13 @@ public class In2pJ {
 	    {
 	    	output.enQueueToken(operation.popToken());
 	    }
-	    System.out.println("Final output Queue");
-	    output.printQueue();
+//	    System.out.println("Final output Queue");
+//	    output.printQueue();
 	    
 	    return output;
 	    
 	}
+	//evaluates postfix, ignore this if wanted
 	public static String evaluatePF(Queue in) {
 		Stack buffer = new Stack();
 		String token;
@@ -135,14 +136,14 @@ public class In2pJ {
 				op1 = Float.valueOf(buffer.popToken()) * -1;
 				buffer.push(Float.toString(op1));
 			}
-			
+			//if an operator, pop first 2 operands and apply operation, push back to stack
 			else if(isAnOperator(token)) {
 				op1 = Float.valueOf(buffer.popToken());
 				op2 = Float.valueOf(buffer.popToken());
 				switch (token) {
-				case "+": buffer.push(Float.toString(op1+op2)); break;
-				case "-": buffer.push(Float.toString(op1-op2)); break;
-				case "*": buffer.push(Float.toString(op1*op2)); break;
+				case "+": buffer.push(Float.toString(op2+op1)); break;
+				case "-": buffer.push(Float.toString(op2-op1)); break;
+				case "*": buffer.push(Float.toString(op2*op1)); break;
 				case "/": buffer.push(Float.toString(op2/op1)); break;
 				}
 			}
@@ -150,17 +151,19 @@ public class In2pJ {
 		}
 		return buffer.popToken();
 	}
-	public void main(String[] args) {
+	public static void main(String[] args) {
 		String str;
 		String result;
 		Queue postfix;
 		Scanner scan = new Scanner(System.in);
 		while (true) {
-			System.out.println("Enter string");
+			System.out.print("Enter string: ");
 			str = scan.nextLine();
 			postfix = in_post(str);
-			result = evaluatePF(postfix);
-			System.out.println(result);
+			result = postfix.queue2String();
+			System.out.println("Postfix: " + result);
+//			result = evaluatePF(postfix);
+//			System.out.println(result);
 		}
 	}
 		

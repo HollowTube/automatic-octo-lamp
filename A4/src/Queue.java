@@ -41,6 +41,7 @@ public class Queue {
 		}
 		System.out.println("");
 	}
+	//converts queue into usable string
 	public String queue2String() {
 		Node buffer = front;
 		String output ="";
