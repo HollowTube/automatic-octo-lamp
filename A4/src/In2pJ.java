@@ -1,53 +1,41 @@
 import java.util.*;
 
+
 public class In2pJ {
 	
 	//simple print function to make printing less verbose
 	public static void print(String num) {
 		System.out.println(num);
 	}
-	public enum operator{
-		PLUS("+",0), MINUS("-",1), MULTIPLY("-",2), DIVIDE("/",3), LEFT("-",4), RIGHT("-",5);
-		private String type;
-		private int precedence;
-		private operator(String type, int precedence) {
-			this.precedence = precedence;
-			this.type = type;
-		}
+	//checks if token is a valid decimal number
+	private static boolean isANumber(String token) {
+		for (char c : token.toCharArray())
+	    {
+	        if (!Character.isDigit(c) && !(c == '.')) return false;
+	    }
+	    return true;
 	}
-	static operator op;
-	//assigns a integer value depending on the tokens
-	
 	//Checks if token is an operator
-	public static boolean isAnOperator(String token) {
+	private static boolean isAnOperator(String token) {
 		if( token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")) return true;
 		else return false;
 	}
-	public static boolean isOp(String token) {
-		switch(token) {
-		case "+": op = operator.PLUS;return true;
-		case "-": op = operator.MINUS;return true;
-		case "*": op = operator.MULTIPLY;return true;
-		case "/": op = operator.DIVIDE;return true;
-		case "(": op = operator.LEFT;return true;
-		case ")": op = operator.RIGHT;return true;	
-		default: return false;
-		}
-	}
-	public static int getOpValue(String token) {
-		switch(token) {
-		case "+": op = operator.PLUS;return 1;
-		case "-": op = operator.MINUS;return 2;
-		case "*": op = operator.MULTIPLY;return 3;
-		case "/": op = operator.DIVIDE;return 4;
-		case "(": op = operator.LEFT;return -1;
-		case ")": op = operator.RIGHT;return -1;	
-		default: return 0;
-		}
-	}
-	public static boolean isABracket(String token) {
-		if(token.equals("(")||token.equals(")")) return true;
+
+	private boolean isUnary(int count, String token, String prev) {
+		if (!token.equals("-")) return false;
+		if (count  == 0 || isAnOperator(prev) || prev.equals("("))return true;
 		else return false;
+	}
+	//returns the precedence of the current token
+	private int getOpValue(String token) {
+		switch(token) {
+		case "(": return 1;
+		case "+": return 2;
+		case "-": return 2;
+		case "*": return 3;
+		case "/": return 3;	
+		default: return 4;
+		}
 	}
 	
 	//Takes user input and places it inside input queue and returns the queue
@@ -61,12 +49,14 @@ public class In2pJ {
 	}
 	
 	// "main" function of class
-	public static Queue in_post(String in){
+	public Queue in_post(String in){
 		
 		Queue input = inputBuffer(in);
 		Queue output = new Queue();
 		Stack operation = new Stack();
+		int count = 0;
 		String token;
+		String prevToken = "";
 		
 	    print("Starting input Queue");
 	    input.printQueue();
@@ -76,17 +66,32 @@ public class In2pJ {
 	    while (!input.isEmpty()) 
 	    {
 	    	token = input.deQueueToken();
-	    	if(isAnOperator(token))
+	    	//puts token in output if its a number
+	    	if(isANumber(token)) {
+	    		output.enQueueToken(token);
+	    	}
+	    	//added new symbol # to distinguish between unary and binary minus
+	    	else if (isUnary(count, token, prevToken)) {
+	    		operation.push("#");
+	    	}
+	    	//checks if its a token
+	    	else if(isAnOperator(token))
 	    	{
+	  
+	    		//will keep on popping out tokens as long as the current token is smaller or equal then the token 
+	    		//on top of the stack, or if until the stack is empty
 		    	while(!operation.isEmpty() && getOpValue(token) <= getOpValue(operation.getTop()) ) 
 		    	{
 		    		output.enQueueToken(operation.popToken());
 		   		}
+		    	//finally push the token
 		   		operation.push(token);
 	    	}
+	    	//push all left parentheses
 	    	else if(token.equals("(")) {
 	    		operation.push(token);
 	    	}
+	    	//pop off operators until left parentheses found
 	    	else if (token.equals(")")) 
 	    	{
 	    		while (!operation.getTop().equals("("))
@@ -95,10 +100,6 @@ public class In2pJ {
 	    		}
 	    		operation.popToken();
 	    	}
-	    	else 
-	    	{
-	    		output.enQueueToken(token);
-	    	}
 	    	
 	    	print("Current operation Stack: ");
 	 	    operation.printStack();
@@ -106,8 +107,10 @@ public class In2pJ {
 	 	    output.printQueue();
 	 	    System.out.println("");
 		    System.out.println("");
+		    count ++;
+		    prevToken = token;
 	    }
-	   
+	    //when the input is exhausted, pop the operator stack into the output queue
 	    while(!operation.isEmpty())
 	    {
 	    	output.enQueueToken(operation.popToken());
@@ -124,8 +127,16 @@ public class In2pJ {
 		float op1;
 		float op2;
 		while (!in.isEmpty()) {
+			
+			//if its a unary minus (represented by #), pop top of stack, multiply by -1 and push it back to
+			//stack
 			token = in.deQueueToken();
-			if(isAnOperator(token)) {
+			if(token.equals("#")) {
+				op1 = Float.valueOf(buffer.popToken()) * -1;
+				buffer.push(Float.toString(op1));
+			}
+			
+			else if(isAnOperator(token)) {
 				op1 = Float.valueOf(buffer.popToken());
 				op2 = Float.valueOf(buffer.popToken());
 				switch (token) {
@@ -139,7 +150,7 @@ public class In2pJ {
 		}
 		return buffer.popToken();
 	}
-	public static void main(String[] args) {
+	public void main(String[] args) {
 		String str;
 		String result;
 		Queue postfix;
