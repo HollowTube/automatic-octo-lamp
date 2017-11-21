@@ -17,7 +17,7 @@ public class In2pJ {
 	    return true;
 	}
 	//Checks if token is an operator
-	private static boolean isAnOperator(String token) {
+	public static boolean isAnOperator(String token) {
 		if( token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")) return true;
 		else return false;
 	}
@@ -60,7 +60,7 @@ public class In2pJ {
 		
 //	    print("Starting input Queue");
 //	    input.printQueue();
-	    System.out.println("");
+//	    System.out.println("");
 	    	
 	    //Going through input queue, Shunting yard algorithm
 	    while (!input.isEmpty()) 
@@ -102,12 +102,12 @@ public class In2pJ {
 	    		operation.popToken();
 	    	}
 	    	
-	    	print("Current operation Stack: ");
-	 	    operation.printStack();
-	 	    print("Current output Queue: ");
-	 	    output.printQueue();
-	 	    System.out.println("");
-		    System.out.println("");
+//	    	print("Current operation Stack: ");
+//	 	    operation.printStack();
+//	 	    print("Current output Queue: ");
+//	 	    output.printQueue();
+//	 	    System.out.println("");
+//		    System.out.println("");
 		    prevToken = token;
 	    }
 	    //when the input is exhausted, pop the operator stack into the output queue
@@ -115,36 +115,34 @@ public class In2pJ {
 	    {
 	    	output.enQueueToken(operation.popToken());
 	    }
-	    System.out.println("Final output Queue");
-	    output.printQueue();
-	    
-	    return output;
-	    
+//	    System.out.println("Final output Queue");
+//	    output.printQueue();
+//	    
+	    return output;   
 	}
-	//evaluates postfix, ignore this if wanted
 	public static String evaluatePF(Queue in) {
 		Stack buffer = new Stack();
 		String token;
-		float op1;
-		float op2;
+		Double op1;
+		Double op2;
 		while (!in.isEmpty()) {
 			
 			//if its a unary minus (represented by #), pop top of stack, multiply by -1 and push it back to
 			//stack
 			token = in.deQueueToken();
 			if(token.equals("#")) {
-				op1 = Float.valueOf(buffer.popToken()) * -1;
-				buffer.push(Float.toString(op1));
+				op1 = Double.valueOf(buffer.popToken()) * -1;
+				buffer.push(Double.toString(op1));
 			}
 			//if an operator, pop first 2 operands and apply operation, push back to stack
 			else if(isAnOperator(token)) {
-				op1 = Float.valueOf(buffer.popToken());
-				op2 = Float.valueOf(buffer.popToken());
+				op1 = Double.valueOf(buffer.popToken());
+				op2 = Double.valueOf(buffer.popToken());
 				switch (token) {
-				case "+": buffer.push(Float.toString(op2+op1)); break;
-				case "-": buffer.push(Float.toString(op2-op1)); break;
-				case "*": buffer.push(Float.toString(op2*op1)); break;
-				case "/": buffer.push(Float.toString(op2/op1)); break;
+				case "+": buffer.push(Double.toString(op2+op1)); break;
+				case "-": buffer.push(Double.toString(op2-op1)); break;
+				case "*": buffer.push(Double.toString(op2*op1)); break;
+				case "/": buffer.push(Double.toString(op2/op1)); break;
 				}
 			}
 			else buffer.push(token);
