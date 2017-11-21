@@ -1,18 +1,22 @@
 //Tritin Truong,  Id: 260806112
 import java.util.Scanner;
 public class JCalc extends In2pJ{
-	//works with both unary operators and parentheses
-	public static void main(String[] args) {
-		String str;
+	public static String evaluateExpression(String in) {
 		String result;
 		Queue postfix;
+		postfix = in_post(in);
+		result = postfix.queue2String();
+		result = evaluatePF(postfix);
+		return result;
+	}
+	public static void main(String[] args) {
 		Scanner scan = new Scanner(System.in);
+		String result;
+		String str;
 		while (true) {
 			System.out.print("Enter expression: ");
 			str = scan.nextLine();
-			postfix = in_post(str);
-			result = postfix.queue2String();
-			result = evaluatePF(postfix);
+			result = evaluateExpression(str);
 			System.out.println(str +"=" + result);
 		}
 	}
