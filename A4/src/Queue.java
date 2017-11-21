@@ -1,4 +1,4 @@
-
+//Tritin Truong,  Id: 260806112
 public class Queue {
 	Node front = null;
 	Node rear = null;

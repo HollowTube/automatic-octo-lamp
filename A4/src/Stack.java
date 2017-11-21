@@ -1,3 +1,4 @@
+//Tritin Truong,  Id: 260806112
 public class Stack {
 	Node top = null;
 	public void print(int num) {

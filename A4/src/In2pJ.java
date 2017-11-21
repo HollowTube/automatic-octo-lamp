@@ -1,3 +1,4 @@
+//Tritin Truong,  Id: 260806112
 import java.util.*;
 
 
@@ -77,7 +78,6 @@ public class In2pJ {
 	    	//checks if its a token
 	    	else if(isAnOperator(token))
 	    	{
-	  
 	    		//will keep on popping out tokens as long as the current token is smaller or equal then the token 
 	    		//on top of the stack, or if until the stack is empty
 		    	while(!operation.isEmpty() && getOpValue(token) <= getOpValue(operation.getTop()) ) 
@@ -102,12 +102,12 @@ public class In2pJ {
 	    		operation.popToken();
 	    	}
 	    	
-//	    	print("Current operation Stack: ");
-//	 	    operation.printStack();
-//	 	    print("Current output Queue: ");
-//	 	    output.printQueue();
-//	 	    System.out.println("");
-//		    System.out.println("");
+	    	print("Current operation Stack: ");
+	 	    operation.printStack();
+	 	    print("Current output Queue: ");
+	 	    output.printQueue();
+	 	    System.out.println("");
+		    System.out.println("");
 		    prevToken = token;
 	    }
 	    //when the input is exhausted, pop the operator stack into the output queue
@@ -115,8 +115,8 @@ public class In2pJ {
 	    {
 	    	output.enQueueToken(operation.popToken());
 	    }
-//	    System.out.println("Final output Queue");
-//	    output.printQueue();
+	    System.out.println("Final output Queue");
+	    output.printQueue();
 	    
 	    return output;
 	    
@@ -162,8 +162,8 @@ public class In2pJ {
 			postfix = in_post(str);
 			result = postfix.queue2String();
 			System.out.println("Postfix: " + result);
-//			result = evaluatePF(postfix);
-//			System.out.println(result);
+			result = evaluatePF(postfix);
+			System.out.println(result);
 		}
 	}
 		
