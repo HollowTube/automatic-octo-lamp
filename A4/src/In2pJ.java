@@ -57,6 +57,7 @@ public class In2pJ {
 		Stack operation = new Stack();
 		String token;
 		String prevToken = "";
+		int counter = 0;
 		
 //	    print("Starting input Queue");
 //	    input.printQueue();
@@ -102,12 +103,13 @@ public class In2pJ {
 	    		operation.popToken();
 	    	}
 	    	
-//	    	print("Current operation Stack: ");
-//	 	    operation.printStack();
-//	 	    print("Current output Queue: ");
-//	 	    output.printQueue();
-//	 	    System.out.println("");
-//		    System.out.println("");
+	    	print("Current Token:" + token);
+	    	print("Current operation Stack: ");
+	 	    operation.printStack();
+	 	    print("Current output Queue: ");
+	 	    output.printQueue();
+	 	    System.out.println("");
+		    System.out.println("");
 		    prevToken = token;
 	    }
 	    //when the input is exhausted, pop the operator stack into the output queue
@@ -149,6 +151,7 @@ public class In2pJ {
 		}
 		return buffer.popToken();
 	}
+	
 	public static void main(String[] args) {
 		String str;
 		String result;
